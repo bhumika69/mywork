@@ -1,0 +1,133 @@
+        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Appointment Booking</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 50px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #333; }
+    label { display: block; margin-top: 15px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #218838; }
+    .hidden { display: none; }
+    .message { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Online Appointment Booking</h2>
+
+  <div id="loginSection">
+    <label>Are you registered?</label>
+    <select id="isRegistered">
+      <option value="">Select</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+
+  <div id="registrationForm" class="hidden">
+    <h3>Registration Form</h3>
+    <label>Name</label>
+    <input type="text" id="regName">
+    <label>Email</label>
+    <input type="email" id="regEmail">
+    <button onclick="registerPatient()">Submit Registration</button>
+  </div>
+
+  <div id="loginForm" class="hidden">
+    <h3>Login</h3>
+    <label>Email</label>
+    <input type="email" id="loginEmail">
+    <button onclick="loginPatient()">Login</button>
+  </div>
+
+  <div id="bookingSection" class="hidden">
+    <h3>Book Appointment</h3>
+    <label>Select Specialty</label>
+    <select id="specialty" onchange="loadSlots()">
+      <option value="">Select</option>
+      <option value="cardiology">Cardiology</option>
+      <option value="dermatology">Dermatology</option>
+    </select>
+
+    <label>Available Dates/Times</label>
+    <select id="availableSlots"></select>
+
+    <button onclick="confirmAppointment()">Confirm Appointment</button>
+    <div class="message" id="confirmationMsg"></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('isRegistered').addEventListener('change', function () {
+    const regForm = document.getElementById('registrationForm');
+    const loginForm = document.getElementById('loginForm');
+    if (this.value === 'yes') {
+      loginForm.classList.remove('hidden');
+      regForm.classList.add('hidden');
+    } else if (this.value === 'no') {
+      regForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    } else {
+      loginForm.classList.add('hidden');
+      regForm.classList.add('hidden');
+    }
+  });
+
+  function registerPatient() {
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    if (name && email) {
+      alert('Registration successful. Please log in.');
+      document.getElementById('isRegistered').value = 'yes';
+      document.getElementById('registrationForm').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+    } else {
+      alert('Please fill all fields.');
+    }
+  }
+
+  function loginPatient() {
+    const email = document.getElementById('loginEmail').value;
+    if (email) {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('bookingSection').classList.remove('hidden');
+    } else {
+      alert('Enter your email.');
+    }
+  }
+
+  function loadSlots() {
+    const slots = {
+      cardiology: ['10:00 AM', '11:00 AM', '2:00 PM'],
+      dermatology: ['9:00 AM', '1:00 PM', '4:00 PM']
+    };
+    const specialty = document.getElementById('specialty').value;
+    const slotDropdown = document.getElementById('availableSlots');
+    slotDropdown.innerHTML = '';
+    if (specialty && slots[specialty]) {
+      slots[specialty].forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot;
+        option.textContent = slot;
+        slotDropdown.appendChild(option);
+      });
+    }
+  }
+
+  function confirmAppointment() {
+    const slot = document.getElementById('availableSlots').value;
+    if (slot) {
+      document.getElementById('confirmationMsg').textContent = 'Appointment confirmed for ' + slot + '. Notification sent to clinic.';
+    } else {
+      alert('Please select a slot.');
+    }
+  }
+</script>
+</body>
+</html>
